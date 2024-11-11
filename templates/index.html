@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f0f0f0;
+            margin: 0;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 600px;
+            height: 80%;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #messages {
+            flex: 1;
+            list-style-type: none;
+            margin: 0;
+            padding: 20px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+        #messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f4f4f4;
+            border-radius: 5px;
+        }
+        form {
+            display: flex;
+            padding: 10px;
+            background: #f4f4f4;
+        }
+        #input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <ul id="messages"></ul>
+        <form id="form" action="">
+            <input id="input" autocomplete="off" placeholder="Type your message..." /><button>Send</button>
+        </form>
+    </div>
+    <script>
+        $(function () {
+            var socket = io();
+            $('form').submit(function() {
+                var text = $('#input').val();
+                socket.send(text);
+                $('#input').val('');
+                return false;
+            });
+            socket.on('message', function(msg){
+                $('#messages').append($('<li>').text(msg));
+                $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            });
+        });
+    </script>
+</body>
+</html>
